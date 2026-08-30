@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Common.Theme.Quotee" parent="android:Theme.Material.NoActionBar" />
+
+    <style name="Common.Theme.Quotee.Splash" parent="Theme.SplashScreen.IconBackground">
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
+    </style>
+</resources>

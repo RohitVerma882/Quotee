@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Quotee</string>
+
+    <string name="quotes_title">Quotes</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_appearance">Appearance</string>
+    <string name="settings_appearance_summary">Manage the application visual interface, including theme modes and Material You dynamic color schemes</string>
+
+    <string name="settings_theme_title">Theme</string>
+    <string name="settings_theme_system">System default</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+
+    <string name="settings_dynamic_colors_title">Dynamic colors</string>
+    <string name="settings_dynamic_colors_summary">Synchronize application colors with the device wallpaper for a cohesive Material You experience</string>
+
+    <string name="common_cancel">Cancel</string>
+</resources>
