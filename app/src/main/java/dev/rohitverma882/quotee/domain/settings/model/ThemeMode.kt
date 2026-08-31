@@ -9,7 +9,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class ThemeMode(
-    @param:StringRes val nameRes: Int
+    @param:StringRes
+    val nameRes: Int
 ) {
     @SerialName("system")
     SYSTEM(R.string.settings_theme_system),

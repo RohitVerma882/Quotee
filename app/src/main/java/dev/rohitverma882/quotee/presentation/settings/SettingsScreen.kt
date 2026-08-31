@@ -1,4 +1,4 @@
-package dev.rohitverma882.quotee.presentation.features.settings
+package dev.rohitverma882.quotee.presentation.settings
 
 import android.os.Build
 import androidx.compose.foundation.layout.Column
@@ -7,10 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ColorLens
@@ -38,30 +37,29 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.rohitverma882.quotee.R
 import dev.rohitverma882.quotee.domain.settings.model.ThemeMode
+import dev.rohitverma882.quotee.presentation.components.PreferenceHeader
 import dev.rohitverma882.quotee.presentation.components.PreferenceItem
 import dev.rohitverma882.quotee.presentation.components.SwitchPreferenceItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsAppearanceScreen(
+fun SettingsScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val currentOnBack by rememberUpdatedState(onBack)
-
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val settings by viewModel.settings.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    var showThemeDialog by remember { mutableStateOf(false) }
+    var showThemeDialog by remember { mutableStateOf(value = false) }
 
     val onThemeChange = remember(viewModel) {
         { theme: ThemeMode ->
-            viewModel.setTheme(theme)
+            viewModel.setThemeMode(theme)
             showThemeDialog = false
         }
     }
@@ -71,45 +69,44 @@ fun SettingsAppearanceScreen(
     }
 
     Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
                 scrollBehavior = scrollBehavior,
-                title = { Text(stringResource(R.string.settings_section_appearance)) },
+                title = { Text(stringResource(R.string.settings_title)) },
                 navigationIcon = {
-                    IconButton(onClick = currentOnBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                            contentDescription = null
-                        )
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
                     }
                 }
             )
         }
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(vertical = 16.dp),
         ) {
-            Column(modifier = Modifier.fillMaxWidth()) {
+            item {
+                PreferenceHeader(title = stringResource(R.string.settings_appearance_heading))
+            }
+
+            item {
                 PreferenceItem(
                     title = stringResource(R.string.settings_theme_title),
-                    summary = stringResource(uiState.appearance.theme.nameRes),
+                    summary = stringResource(settings.themeMode.nameRes),
                     icon = Icons.Outlined.LightMode,
                     onClick = { showThemeDialog = true }
                 )
+            }
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                item {
                     SwitchPreferenceItem(
                         title = stringResource(R.string.settings_dynamic_colors_title),
                         summary = stringResource(R.string.settings_dynamic_colors_summary),
                         icon = Icons.Outlined.ColorLens,
-                        checked = uiState.appearance.dynamicColor,
+                        checked = settings.dynamicColor,
                         onCheckedChange = onDynamicColorChange
                     )
                 }
@@ -119,7 +116,7 @@ fun SettingsAppearanceScreen(
 
     if (showThemeDialog) {
         SelectThemeDialog(
-            currentTheme = uiState.appearance.theme,
+            currentTheme = settings.themeMode,
             onThemeSelected = onThemeChange,
             onDismissRequest = { showThemeDialog = false }
         )

@@ -11,13 +11,20 @@ import androidx.navigation3.runtime.rememberNavBackStack
 class AppNavigator(
     val backStack: NavBackStack<NavKey>
 ) {
-
-    fun goTo(route: NavKey) {
-        backStack.add(route)
+    private fun goTo(route: NavKey) {
+        if (backStack.lastOrNull() != route) {
+            backStack.add(route)
+        }
     }
 
     fun goBack() {
-        backStack.removeLastOrNull()
+        if (backStack.size > 1) {
+            backStack.removeLastOrNull()
+        }
+    }
+
+    fun goToSettings() {
+        goTo(AppNavKey.Settings)
     }
 }
 
@@ -25,7 +32,5 @@ class AppNavigator(
 fun rememberAppNavigator(
     backStack: NavBackStack<NavKey> = rememberNavBackStack(AppNavKey.Quotes)
 ): AppNavigator {
-    return remember(backStack) {
-        AppNavigator(backStack = backStack)
-    }
+    return remember(backStack) { AppNavigator(backStack) }
 }

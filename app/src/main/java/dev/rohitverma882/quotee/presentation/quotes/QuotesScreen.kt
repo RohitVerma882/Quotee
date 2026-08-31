@@ -1,5 +1,6 @@
-package dev.rohitverma882.quotee.presentation.features.quotes
+package dev.rohitverma882.quotee.presentation.quotes
 
+import android.content.ClipData
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,36 +22,43 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import dev.rohitverma882.quotee.R
 import dev.rohitverma882.quotee.domain.quotes.model.Quote
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuotesScreen(
     modifier: Modifier = Modifier,
     viewModel: QuotesViewModel = hiltViewModel(),
-    openSettings: () -> Unit
+    onOpenSettings: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val quotes = viewModel.quotes.collectAsLazyPagingItems()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -58,12 +66,14 @@ fun QuotesScreen(
             QuotesTopBar(
                 scrollBehavior = scrollBehavior,
                 titleRes = R.string.quotes_title,
-                openSettings = openSettings
+                openSettings = onOpenSettings
             )
         },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
         QuotesContent(
             quotes = quotes,
+            snackbarHostState = snackbarHostState,
             innerPadding = innerPadding
         )
     }
@@ -92,16 +102,18 @@ private fun QuotesTopBar(
 @Composable
 private fun QuotesContent(
     quotes: LazyPagingItems<Quote>,
+    snackbarHostState: SnackbarHostState,
     innerPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
+    val clipboard = LocalClipboard.current
+    val scope = rememberCoroutineScope()
     val layoutDirection = LocalLayoutDirection.current
     val listState = rememberLazyListState()
 
     // Enforce top-position anchor when first batch of items is loaded
     LaunchedEffect(quotes.itemCount) {
-        if (quotes.itemCount > 0 && listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0) {
+        if (quotes.itemCount > 0 && (listState.firstVisibleItemIndex == 0) && (listState.firstVisibleItemScrollOffset == 0)) {
             listState.scrollToItem(0)
         }
     }
@@ -122,16 +134,22 @@ private fun QuotesContent(
                 count = quotes.itemCount,
                 key = quotes.itemKey { it.id }
             ) { index ->
-                val quote = quotes[index]
-                if (quote != null) {
+                quotes[index]?.let { quote ->
                     QuoteCard(
                         quote = quote,
-                        onCopy = { quote.copyToClipboard(context) }
+                        onCopy = {
+                            scope.launch {
+                                val clipData = ClipData.newPlainText("Quote", quote.content)
+                                clipboard.setClipEntry(ClipEntry(clipData))
+                                snackbarHostState.currentSnackbarData?.dismiss()
+                                snackbarHostState.showSnackbar("Quote copied to clipboard")
+                            }
+                        }
                     )
                 }
             }
 
-            when (val state = quotes.loadState.append) {
+            when (quotes.loadState.append) {
                 is LoadState.Loading -> {
                     item {
                         Box(

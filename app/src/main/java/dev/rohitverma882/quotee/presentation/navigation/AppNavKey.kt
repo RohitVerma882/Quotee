@@ -8,15 +8,9 @@ import kotlinx.serialization.Serializable
 sealed interface AppNavKey : NavKey {
     @Serializable
     @SerialName("quotes")
-    data object Quotes : NavKey
+    data object Quotes : AppNavKey
 
     @Serializable
     @SerialName("settings")
-    data object Settings : NavKey
-}
-
-sealed interface SettingsNavKey : AppNavKey {
-    @Serializable
-    @SerialName("appearance")
-    data object Appearance : SettingsNavKey
+    data object Settings : AppNavKey
 }

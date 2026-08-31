@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -40,7 +41,7 @@ class MainActivity : ComponentActivity() {
         var themeSettings by mutableStateOf(
             ThemeSettings(
                 darkTheme = resources.configuration.isSystemInDarkTheme,
-                dynamicColor = MainUiState.Loading.dynamicColor
+                dynamicColor = true
             )
         )
 
@@ -50,11 +51,16 @@ class MainActivity : ComponentActivity() {
                     isSystemInDarkTheme(),
                     viewModel.uiState
                 ) { systemDark, uiState ->
-                    ThemeSettings(
-                        darkTheme = uiState.isDarkTheme(systemDark),
-                        dynamicColor = uiState.dynamicColor
-                    )
+                    if (uiState is MainUiState.Success) {
+                        ThemeSettings(
+                            darkTheme = uiState.isDarkTheme(systemDark),
+                            dynamicColor = uiState.settings.dynamicColor
+                        )
+                    } else {
+                        null
+                    }
                 }
+                    .filterNotNull()
                     .onEach { themeSettings = it }
                     .map { it.darkTheme }
                     .distinctUntilChanged()
@@ -73,7 +79,7 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        splashScreen.setKeepOnScreenCondition { viewModel.shouldKeepSplashScreen }
+        splashScreen.setKeepOnScreenCondition { viewModel.uiState.value is MainUiState.Loading }
 
         setContent {
             QuoteeTheme(

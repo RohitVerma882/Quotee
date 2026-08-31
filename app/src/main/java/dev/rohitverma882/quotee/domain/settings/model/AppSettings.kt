@@ -5,12 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AppSettings(
-    @SerialName("appearance")
-    val appearance: AppearanceSettings = AppearanceSettings()
-)
-
-@Serializable
-data class AppearanceSettings(
     @SerialName("theme_mode")
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     @SerialName("dynamic_color")

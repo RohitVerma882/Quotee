@@ -1,4 +1,4 @@
-package dev.rohitverma882.quotee.presentation.features.quotes
+package dev.rohitverma882.quotee.presentation.quotes
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+
 import dev.rohitverma882.quotee.domain.quotes.model.Quote
 
 @Composable
@@ -52,20 +53,20 @@ fun QuoteCard(
             ) {
                 Text(
                     text = "— ${quote.author}",
-                    style = MaterialTheme.typography.labelLarge
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary
                 )
 
-                Row {
-                    IconButton(
-                        onClick = onCopy,
-                        modifier = Modifier.size(40.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.ContentCopy,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
+                IconButton(
+                    modifier = Modifier.size(40.dp),
+                    onClick = onCopy
+                ) {
+                    Icon(
+                        modifier = Modifier.size(20.dp),
+                        imageVector = Icons.Outlined.ContentCopy,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
         }

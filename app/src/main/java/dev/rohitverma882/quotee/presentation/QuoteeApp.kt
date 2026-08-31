@@ -18,7 +18,7 @@ fun QuoteeApp(
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { innerPadding ->
         AppNavDisplay(
-            modifier = modifier
+            modifier = Modifier
                 .padding(innerPadding)
                 .consumeWindowInsets(innerPadding)
         )

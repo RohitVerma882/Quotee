@@ -6,10 +6,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
 
-import dev.rohitverma882.quotee.data.quotes.local.QuotesDatabase
+import dev.rohitverma882.quotee.data.quotes.local.QuoteDao
 import dev.rohitverma882.quotee.data.quotes.local.toDomain
 import dev.rohitverma882.quotee.data.quotes.paging.QuotesRemoteMediator
-import dev.rohitverma882.quotee.data.quotes.remote.QuotesApi
 import dev.rohitverma882.quotee.domain.quotes.model.Quote
 import dev.rohitverma882.quotee.domain.quotes.repository.QuotesRepository
 
@@ -20,29 +19,26 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
 class QuotesRepositoryImpl @Inject constructor(
-    private val api: QuotesApi,
-    private val database: QuotesDatabase,
+    private val dao: QuoteDao,
+    private val remoteMediator: QuotesRemoteMediator
 ) : QuotesRepository {
 
     override fun getQuotes(): Flow<PagingData<Quote>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
-                initialLoadSize = 20,
                 prefetchDistance = 1,
                 enablePlaceholders = false,
             ),
-            remoteMediator = QuotesRemoteMediator(
-                api = api,
-                database = database,
-            ),
+            remoteMediator = remoteMediator,
             pagingSourceFactory = {
-                database.quoteDao().pagingSource()
-            },
-        ).flow.map { pagingData ->
-            pagingData.map { entity ->
-                entity.toDomain()
+                dao.pagingSource()
             }
-        }
+        )
+            .flow.map { pagingData ->
+                pagingData.map { entity ->
+                    entity.toDomain()
+                }
+            }
     }
 }

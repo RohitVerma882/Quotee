@@ -4,7 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -14,6 +16,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
+
+/**
+ * A category header for settings sections.
+ */
+@Composable
+fun PreferenceHeader(
+    title: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 8.dp)
+    )
+}
 
 /**
  * A standard menu item for settings and other lists.
@@ -27,10 +48,19 @@ fun PreferenceItem(
     summary: String? = null
 ) {
     ListItem(
-        headlineContent = { Text(title) },
+        headlineContent = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        },
         supportingContent = summary?.let {
             {
-                Text(it)
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         },
         leadingContent = {
@@ -66,13 +96,16 @@ fun SwitchPreferenceItem(
     ListItem(
         headlineContent = {
             Text(
-                text = title
+                text = title,
+                style = MaterialTheme.typography.bodyLarge
             )
         },
         supportingContent = summary?.let {
             {
                 Text(
-                    text = it
+                    text = it,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         },

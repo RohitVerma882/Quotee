@@ -6,9 +6,9 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import dev.rohitverma882.quotee.presentation.features.quotes.QuotesScreen
-import dev.rohitverma882.quotee.presentation.features.settings.SettingsAppearanceScreen
-import dev.rohitverma882.quotee.presentation.features.settings.SettingsScreen
+
+import dev.rohitverma882.quotee.presentation.quotes.QuotesScreen
+import dev.rohitverma882.quotee.presentation.settings.SettingsScreen
 
 @Composable
 fun AppNavDisplay(
@@ -26,19 +26,12 @@ fun AppNavDisplay(
         entryProvider = entryProvider {
             entry<AppNavKey.Quotes> {
                 QuotesScreen(
-                    openSettings = { navigator.goTo(AppNavKey.Settings) }
+                    onOpenSettings = { navigator.goToSettings() }
                 )
             }
 
-            // --- Settings Tab ---
             entry<AppNavKey.Settings> {
                 SettingsScreen(
-                    onShowAppearance = { navigator.goTo(SettingsNavKey.Appearance) },
-                )
-            }
-
-            entry<SettingsNavKey.Appearance> {
-                SettingsAppearanceScreen(
                     onBack = navigator::goBack
                 )
             }

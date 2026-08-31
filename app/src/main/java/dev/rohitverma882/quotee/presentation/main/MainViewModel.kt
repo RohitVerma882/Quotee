@@ -3,9 +3,9 @@ package dev.rohitverma882.quotee.presentation.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.rohitverma882.quotee.domain.settings.model.AppearanceSettings
+import dev.rohitverma882.quotee.domain.settings.model.AppSettings
 import dev.rohitverma882.quotee.domain.settings.model.ThemeMode
-import dev.rohitverma882.quotee.domain.settings.usecase.GetAppearanceUseCase
+import dev.rohitverma882.quotee.domain.settings.repository.SettingsRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -14,35 +14,24 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    getAppearanceUseCase: GetAppearanceUseCase
+    repository: SettingsRepository
 ) : ViewModel() {
 
-    val uiState: StateFlow<MainUiState> =
-        getAppearanceUseCase()
-            .map(MainUiState::Success)
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = MainUiState.Loading
-            )
-
-    val shouldKeepSplashScreen get() = uiState.value is MainUiState.Loading
+    val uiState: StateFlow<MainUiState> = repository.settings
+        .map(MainUiState::Success)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = MainUiState.Loading
+        )
 }
 
 sealed interface MainUiState {
-    val dynamicColor get() = false
-    val themeMode get() = ThemeMode.SYSTEM
-
-    fun isDarkTheme(isSystemInDarkTheme: Boolean) = isSystemInDarkTheme
-
     data object Loading : MainUiState
 
-    data class Success(val appearance: AppearanceSettings) : MainUiState {
-        override val dynamicColor get() = appearance.dynamicColor
-        override val themeMode get() = appearance.themeMode
-
-        override fun isDarkTheme(isSystemInDarkTheme: Boolean) = when (themeMode) {
-            ThemeMode.SYSTEM -> isSystemInDarkTheme
+    data class Success(val settings: AppSettings) : MainUiState {
+        fun isDarkTheme(systemDark: Boolean) = when (settings.themeMode) {
+            ThemeMode.SYSTEM -> systemDark
             ThemeMode.LIGHT -> false
             ThemeMode.DARK -> true
         }

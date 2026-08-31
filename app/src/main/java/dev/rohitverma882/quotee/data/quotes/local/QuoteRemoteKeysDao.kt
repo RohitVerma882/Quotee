@@ -14,10 +14,10 @@ interface QuoteRemoteKeysDao {
         WHERE quoteId = :quoteId
         """
     )
-    suspend fun remoteKeys(quoteId: Int): QuoteRemoteKeysEntity?
+    suspend fun getById(quoteId: Int): QuoteRemoteKeysEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(remoteKey: List<QuoteRemoteKeysEntity>)
+    suspend fun insertAll(keys: List<QuoteRemoteKeysEntity>)
 
     @Query("DELETE FROM quote_remote_keys")
     suspend fun clear()

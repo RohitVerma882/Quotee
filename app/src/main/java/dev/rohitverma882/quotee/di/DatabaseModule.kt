@@ -26,4 +26,14 @@ object DatabaseModule {
         klass = QuotesDatabase::class.java,
         name = "quotes.db",
     ).build()
+
+    @Provides
+    fun provideQuotesDao(
+        database: QuotesDatabase
+    ) = database.quoteDao()
+
+    @Provides
+    fun provideQuoteRemoteKeysDao(
+        database: QuotesDatabase
+    ) = database.quoteRemoteKeysDao()
 }
