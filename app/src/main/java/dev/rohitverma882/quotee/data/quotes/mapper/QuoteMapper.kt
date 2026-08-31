@@ -15,17 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.rohitverma882.quotee.domain.quotes.model
+package dev.rohitverma882.quotee.data.quotes.mapper
+
+import dev.rohitverma882.quotee.data.quotes.local.QuoteEntity
+import dev.rohitverma882.quotee.data.quotes.remote.QuoteDto
+import dev.rohitverma882.quotee.domain.quotes.model.Quote
 
 /**
- * Domain model representing a quote.
- *
- * @property id The unique identifier of the quote.
- * @property content The text content of the quote.
- * @property author The author of the quote.
+ * Maps [QuoteDto] to [QuoteEntity].
  */
-data class Quote(
-    val id: Int,
-    val content: String,
-    val author: String,
+fun QuoteDto.toEntity() = QuoteEntity(
+    id = id,
+    content = quote,
+    author = author,
+)
+
+/**
+ * Maps [QuoteEntity] to [Quote].
+ */
+fun QuoteEntity.toDomain() = Quote(
+    id = id,
+    content = content,
+    author = author,
 )

@@ -1,35 +1,52 @@
+/*
+ * Copyright (C) 2026  Rohit Verma
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.rohitverma882.quotee.presentation.main
 
-import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
+
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.runtime.Immutable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.util.Consumer
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+
 import dagger.hilt.android.AndroidEntryPoint
+
+import dev.rohitverma882.quotee.common.extension.isSystemInDarkTheme2
 import dev.rohitverma882.quotee.presentation.QuoteeApp
 import dev.rohitverma882.quotee.presentation.theme.QuoteeTheme
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.callbackFlow
+
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+/**
+ * The main activity of the application.
+ */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
@@ -38,80 +55,43 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        var themeSettings by mutableStateOf(
-            ThemeSettings(
-                darkTheme = resources.configuration.isSystemInDarkTheme,
-                dynamicColor = true
-            )
-        )
+        splashScreen.setKeepOnScreenCondition {
+            viewModel.shouldKeepSplashScreen
+        }
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 combine(
-                    isSystemInDarkTheme(),
+                    isSystemInDarkTheme2(),
                     viewModel.uiState
-                ) { systemDark, uiState ->
-                    if (uiState is MainUiState.Success) {
-                        ThemeSettings(
-                            darkTheme = uiState.isDarkTheme(systemDark),
-                            dynamicColor = uiState.settings.dynamicColor
-                        )
-                    } else {
-                        null
-                    }
+                ) { isSystemDark, uiState ->
+                    uiState.shouldDarkTheme(isSystemDark)
                 }
-                    .filterNotNull()
-                    .onEach { themeSettings = it }
-                    .map { it.darkTheme }
                     .distinctUntilChanged()
-                    .collect { darkTheme ->
+                    .collectLatest { darkTheme ->
                         enableEdgeToEdge(
                             statusBarStyle = SystemBarStyle.auto(
                                 Color.TRANSPARENT,
-                                Color.TRANSPARENT
+                                Color.TRANSPARENT,
                             ) { darkTheme },
                             navigationBarStyle = SystemBarStyle.auto(
                                 Color.TRANSPARENT,
-                                Color.TRANSPARENT
-                            ) { darkTheme }
+                                Color.TRANSPARENT,
+                            ) { darkTheme },
                         )
                     }
             }
         }
 
-        splashScreen.setKeepOnScreenCondition { viewModel.uiState.value is MainUiState.Loading }
-
         setContent {
+            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
             QuoteeTheme(
-                darkTheme = themeSettings.darkTheme,
-                dynamicColor = themeSettings.dynamicColor
+                darkTheme = uiState.shouldDarkTheme(isSystemInDarkTheme()),
+                dynamicColor = uiState.dynamicColor,
             ) {
                 QuoteeApp()
             }
         }
     }
 }
-
-private val Configuration.isSystemInDarkTheme
-    get() = (uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
-
-private fun ComponentActivity.isSystemInDarkTheme() = callbackFlow {
-    val listener = Consumer<Configuration> { newConfig ->
-        trySend(newConfig.isSystemInDarkTheme)
-    }
-
-    trySend(resources.configuration.isSystemInDarkTheme)
-
-    addOnConfigurationChangedListener(listener)
-    awaitClose {
-        removeOnConfigurationChangedListener(listener)
-    }
-}
-    .distinctUntilChanged()
-    .conflate()
-
-@Immutable
-data class ThemeSettings(
-    val darkTheme: Boolean,
-    val dynamicColor: Boolean
-)

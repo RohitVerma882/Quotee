@@ -15,17 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.rohitverma882.quotee.domain.quotes.model
+package dev.rohitverma882.quotee.common.extension
+
+import android.content.pm.ApplicationInfo
 
 /**
- * Domain model representing a quote.
- *
- * @property id The unique identifier of the quote.
- * @property content The text content of the quote.
- * @property author The author of the quote.
+ * Returns true if the application is debuggable.
  */
-data class Quote(
-    val id: Int,
-    val content: String,
-    val author: String,
-)
+val ApplicationInfo.isDebuggable
+    get() = (flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
