@@ -17,6 +17,8 @@
 
 package dev.rohitverma882.quotee.presentation.quotes
 
+import android.content.res.Configuration
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,9 +37,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import dev.rohitverma882.quotee.domain.quotes.model.Quote
+import dev.rohitverma882.quotee.presentation.theme.QuoteeTheme
 
 /**
  * A card component that displays a single quote.
@@ -63,7 +67,7 @@ fun QuoteCard(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = "“${quote.content}”",
+                text = quote.displayContent,
                 style = MaterialTheme.typography.bodyLarge,
                 fontStyle = FontStyle.Italic,
                 lineHeight = MaterialTheme.typography.bodyLarge.lineHeight * 1.2f
@@ -93,5 +97,40 @@ fun QuoteCard(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun QuoteCardPreview() {
+    QuoteeTheme {
+        QuoteCard(
+            modifier = Modifier.padding(16.dp),
+            quote = Quote(
+                id = 1,
+                content = "Life is what happens when you're busy making other plans.",
+                author = "John Lennon"
+            ),
+            onCopy = {}
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun QuoteCardDarkPreview() {
+    QuoteeTheme {
+        QuoteCard(
+            modifier = Modifier.padding(16.dp),
+            quote = Quote(
+                id = 1,
+                content = "Life is what happens when you're busy making other plans.",
+                author = "John Lennon"
+            ),
+            onCopy = {}
+        )
     }
 }

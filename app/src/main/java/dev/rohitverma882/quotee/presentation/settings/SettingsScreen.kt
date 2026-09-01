@@ -20,11 +20,9 @@ package dev.rohitverma882.quotee.presentation.settings
 import android.os.Build
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -65,7 +63,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 import dev.rohitverma882.quotee.R
-import dev.rohitverma882.quotee.domain.settings.model.AppSettings
 import dev.rohitverma882.quotee.domain.settings.model.ThemeMode
 
 /**
@@ -81,6 +78,8 @@ fun SettingsScreen(
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
+    var showThemeDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -95,43 +94,30 @@ fun SettingsScreen(
             )
         }
     ) { innerPadding ->
-        SettingsContent(
-            settings = settings,
-            onThemeClick = viewModel::setThemeMode,
-            onDynamicColorChange = viewModel::setDynamicColor,
-            modifier = Modifier.padding(innerPadding)
-        )
-    }
-}
-
-@Composable
-private fun SettingsContent(
-    settings: AppSettings,
-    onThemeClick: (ThemeMode) -> Unit,
-    onDynamicColorChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var showThemeDialog by remember { mutableStateOf(false) }
-
-    LazyColumn(modifier = modifier.fillMaxSize()) {
-        item {
-            PreferenceItem(
-                title = stringResource(R.string.settings_theme_title),
-                summary = stringResource(settings.themeMode.nameRes),
-                icon = Icons.Outlined.LightMode,
-                onClick = { showThemeDialog = true }
-            )
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
             item {
-                SwitchPreferenceItem(
-                    title = stringResource(R.string.settings_dynamic_colors_title),
-                    summary = stringResource(R.string.settings_dynamic_colors_summary),
-                    icon = Icons.Outlined.ColorLens,
-                    checked = settings.dynamicColor,
-                    onCheckedChange = onDynamicColorChange
+                PreferenceItem(
+                    title = stringResource(R.string.settings_theme_title),
+                    summary = stringResource(settings.themeMode.nameRes),
+                    icon = Icons.Outlined.LightMode,
+                    onClick = { showThemeDialog = true }
                 )
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                item {
+                    SwitchPreferenceItem(
+                        title = stringResource(R.string.settings_dynamic_colors_title),
+                        summary = stringResource(R.string.settings_dynamic_colors_summary),
+                        icon = Icons.Outlined.ColorLens,
+                        checked = settings.dynamicColor,
+                        onCheckedChange = viewModel::setDynamicColor
+                    )
+                }
             }
         }
     }
@@ -140,14 +126,13 @@ private fun SettingsContent(
         SelectThemeDialog(
             currentTheme = settings.themeMode,
             onThemeSelected = {
-                onThemeClick(it)
+                viewModel.setThemeMode(it)
                 showThemeDialog = false
             },
             onDismiss = { showThemeDialog = false }
         )
     }
 }
-
 
 /**
  * A standard menu item for settings and other lists.
@@ -161,6 +146,9 @@ fun PreferenceItem(
     summary: String? = null
 ) {
     ListItem(
+        modifier = modifier
+            .height(IntrinsicSize.Min)
+            .clickable(onClick = onClick),
         headlineContent = {
             Text(
                 text = title,
@@ -177,20 +165,12 @@ fun PreferenceItem(
             }
         },
         leadingContent = {
-            Box(
-                modifier = Modifier.fillMaxHeight(),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        },
-        modifier = modifier
-            .height(IntrinsicSize.Min)
-            .clickable(onClick = onClick)
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
     )
 }
 
@@ -207,6 +187,9 @@ fun SwitchPreferenceItem(
     icon: ImageVector? = null
 ) {
     ListItem(
+        modifier = modifier
+            .height(IntrinsicSize.Min)
+            .clickable { onCheckedChange(!checked) },
         headlineContent = {
             Text(
                 text = title,
@@ -224,32 +207,19 @@ fun SwitchPreferenceItem(
         },
         leadingContent = icon?.let {
             {
-                Box(
-                    modifier = Modifier.fillMaxHeight(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = it,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-        },
-        trailingContent = {
-            Box(
-                modifier = Modifier.fillMaxHeight(),
-                contentAlignment = Alignment.Center
-            ) {
-                Switch(
-                    checked = checked,
-                    onCheckedChange = onCheckedChange
+                Icon(
+                    imageVector = it,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         },
-        modifier = modifier
-            .height(IntrinsicSize.Min)
-            .clickable { onCheckedChange(!checked) }
+        trailingContent = {
+            Switch(
+                checked = checked,
+                onCheckedChange = onCheckedChange
+            )
+        }
     )
 }
 

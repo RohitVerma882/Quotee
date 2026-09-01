@@ -92,7 +92,7 @@ class MainActivity : ComponentActivity() {
 
             QuoteeTheme(
                 darkTheme = uiState.shouldDarkTheme(isSystemInDarkTheme()),
-                dynamicColor = uiState.dynamicColor,
+                dynamicColor = uiState.dynamicColor
             ) {
                 QuoteeApp()
             }
