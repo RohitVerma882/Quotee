@@ -104,6 +104,13 @@ private val DarkColorScheme = darkColorScheme(
     surfaceContainerHighest = SurfaceContainerHighestDark,
 )
 
+/**
+ * The theme for the Quotee application.
+ *
+ * @param darkTheme Whether to use the dark theme.
+ * @param dynamicColor Whether to use dynamic colors (Android 12+).
+ * @param content The composable content to apply the theme to.
+ */
 @Composable
 fun QuoteeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

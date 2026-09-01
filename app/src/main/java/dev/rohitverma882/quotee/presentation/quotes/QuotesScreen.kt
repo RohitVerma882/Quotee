@@ -99,6 +99,14 @@ fun QuotesScreen(
     }
 }
 
+/**
+ * The top bar for the quotes screen.
+ *
+ * @param modifier The modifier to be applied to the top bar.
+ * @param scrollBehavior The scroll behavior for the top bar.
+ * @param titleRes The resource ID for the title text.
+ * @param openSettings Callback when the settings button is clicked.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun QuotesTopBar(
@@ -119,6 +127,14 @@ private fun QuotesTopBar(
     )
 }
 
+/**
+ * The main content of the quotes screen.
+ *
+ * @param quotes The paging items of quotes.
+ * @param snackbarHostState The state of the snackbar host.
+ * @param innerPadding The padding values from the scaffold.
+ * @param modifier The modifier to be applied to the content.
+ */
 @Composable
 private fun QuotesContent(
     quotes: LazyPagingItems<Quote>,
@@ -232,6 +248,13 @@ private fun QuotesContent(
     }
 }
 
+/**
+ * The content to display when an error occurs.
+ *
+ * @param error The error that occurred.
+ * @param onRetry Callback to retry the operation.
+ * @param modifier The modifier to be applied to the error content.
+ */
 @Composable
 private fun ErrorContent(
     error: Throwable,

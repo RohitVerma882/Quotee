@@ -34,9 +34,19 @@ import kotlinx.coroutines.CoroutineScope
 
 import javax.inject.Singleton
 
+/**
+ * Dagger module for providing DataStore related dependencies.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DataStoreModule {
+    /**
+     * Provides the settings DataStore.
+     *
+     * @param context The application context.
+     * @param scope The application-level coroutine scope.
+     * @param serializer The serializer for settings data.
+     */
     @Provides
     @Singleton
     fun provideSettingsDataStore(
