@@ -17,16 +17,22 @@
 
 package dev.rohitverma882.quotee.di
 
+import android.content.Context
+
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 
+import dev.rohitverma882.quotee.common.extension.isDebuggable
 import dev.rohitverma882.quotee.data.quotes.remote.QuotesApi
 
 import kotlinx.serialization.json.Json
 
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -40,12 +46,42 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
     /**
+     * Provides the [HttpLoggingInterceptor] instance.
+     */
+    @Provides
+    @Singleton
+    fun provideLoggingInterceptor(
+        @ApplicationContext context: Context
+    ) = HttpLoggingInterceptor().apply {
+        level = if (context.applicationInfo.isDebuggable) {
+            HttpLoggingInterceptor.Level.BODY
+        } else {
+            HttpLoggingInterceptor.Level.NONE
+        }
+    }
+
+    /**
+     * Provides the [OkHttpClient] instance.
+     */
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .build()
+
+    /**
      * Provides the [Retrofit] instance for quotes API.
      */
     @Provides
     @Singleton
-    fun provideQuotesRetrofit(json: Json): Retrofit = Retrofit.Builder()
+    fun provideQuotesRetrofit(
+        json: Json,
+        okHttpClient: OkHttpClient
+    ): Retrofit = Retrofit.Builder()
         .baseUrl(QuotesApi.BASE_URL)
+        .client(okHttpClient)
         .addConverterFactory(
             json.asConverterFactory("application/json".toMediaType())
         ).build()

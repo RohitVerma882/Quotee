@@ -37,7 +37,6 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ColorLens
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -66,6 +65,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 import dev.rohitverma882.quotee.R
+import dev.rohitverma882.quotee.domain.settings.model.AppSettings
 import dev.rohitverma882.quotee.domain.settings.model.ThemeMode
 
 /**
@@ -78,7 +78,7 @@ fun SettingsScreen(
     onBack: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val settings by viewModel.settings.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
@@ -95,44 +95,25 @@ fun SettingsScreen(
             )
         }
     ) { innerPadding ->
-        when (val state = uiState) {
-            is SettingsUiState.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-
-            is SettingsUiState.Success -> {
-                SettingsContent(
-                    settings = state.settings,
-                    onThemeClick = viewModel::setThemeMode,
-                    onDynamicColorChange = viewModel::setDynamicColor,
-                    modifier = Modifier.padding(innerPadding)
-                )
-            }
-        }
+        SettingsContent(
+            settings = settings,
+            onThemeClick = viewModel::setThemeMode,
+            onDynamicColorChange = viewModel::setDynamicColor,
+            modifier = Modifier.padding(innerPadding)
+        )
     }
 }
 
 @Composable
 private fun SettingsContent(
-    settings: dev.rohitverma882.quotee.domain.settings.model.AppSettings,
+    settings: AppSettings,
     onThemeClick: (ThemeMode) -> Unit,
     onDynamicColorChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var showThemeDialog by remember { mutableStateOf(value = false) }
+    var showThemeDialog by remember { mutableStateOf(false) }
 
     LazyColumn(modifier = modifier.fillMaxSize()) {
-        item {
-            PreferenceHeader(title = stringResource(R.string.settings_appearance_heading))
-        }
-
         item {
             PreferenceItem(
                 title = stringResource(R.string.settings_theme_title),
@@ -162,28 +143,11 @@ private fun SettingsContent(
                 onThemeClick(it)
                 showThemeDialog = false
             },
-            onDismissRequest = { showThemeDialog = false }
+            onDismiss = { showThemeDialog = false }
         )
     }
 }
 
-/**
- * A category header for settings sections.
- */
-@Composable
-fun PreferenceHeader(
-    title: String,
-    modifier: Modifier = Modifier
-) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.labelLarge,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, top = 24.dp, end = 16.dp, bottom = 8.dp)
-    )
-}
 
 /**
  * A standard menu item for settings and other lists.
@@ -291,19 +255,20 @@ fun SwitchPreferenceItem(
 
 @Composable
 private fun SelectThemeDialog(
+    modifier: Modifier = Modifier,
     currentTheme: ThemeMode,
     onThemeSelected: (ThemeMode) -> Unit,
-    onDismissRequest: () -> Unit,
-    modifier: Modifier = Modifier
+    onDismiss: () -> Unit
 ) {
     AlertDialog(
-        onDismissRequest = onDismissRequest,
+        modifier = modifier,
+        onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.settings_theme_title)) },
         text = {
-            Column(Modifier.selectableGroup()) {
+            Column(modifier = Modifier.selectableGroup()) {
                 ThemeMode.entries.forEach { theme ->
                     Row(
-                        Modifier
+                        modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp)
                             .selectable(
@@ -328,10 +293,9 @@ private fun SelectThemeDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismissRequest) {
+            TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.common_cancel))
             }
-        },
-        modifier = modifier
+        }
     )
 }

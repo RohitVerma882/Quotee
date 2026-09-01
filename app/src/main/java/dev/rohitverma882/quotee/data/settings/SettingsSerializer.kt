@@ -20,11 +20,7 @@ package dev.rohitverma882.quotee.data.settings
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
 
-import dev.rohitverma882.quotee.common.IoDispatcher
 import dev.rohitverma882.quotee.domain.settings.model.AppSettings
-
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -38,11 +34,10 @@ import javax.inject.Singleton
 /**
  * Serializer for [AppSettings] to be used with DataStore.
  */
+@Suppress("BlockingMethodInNonBlockingContext")
 @Singleton
 class SettingsSerializer @Inject constructor(
-    private val json: Json,
-    @param:IoDispatcher
-    private val dispatcher: CoroutineDispatcher
+    private val json: Json
 ) : Serializer<AppSettings> {
     /**
      * The default [AppSettings] value.
@@ -59,14 +54,14 @@ class SettingsSerializer @Inject constructor(
                 string = input.readBytes().decodeToString()
             )
         } catch (e: SerializationException) {
-            throw CorruptionException("Cannot read json.", e)
+            throw CorruptionException("Unable to read AppSettings", e)
         }
     }
 
     /**
      * Writes [AppSettings] to the [OutputStream].
      */
-    override suspend fun writeTo(t: AppSettings, output: OutputStream) = withContext(dispatcher) {
+    override suspend fun writeTo(t: AppSettings, output: OutputStream) {
         output.write(
             json.encodeToString(
                 serializer = AppSettings.serializer(),

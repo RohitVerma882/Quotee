@@ -159,7 +159,7 @@ private fun QuotesContent(
                         quote = quote,
                         onCopy = {
                             scope.launch {
-                                val clipData = ClipData.newPlainText("Quote", quote.content)
+                                val clipData = ClipData.newPlainText("Quote", "“${quote.content}”")
                                 clipboard.setClipEntry(ClipEntry(clipData))
                                 snackbarHostState.currentSnackbarData?.dismiss()
                                 snackbarHostState.showSnackbar("Quote copied to clipboard")

@@ -44,6 +44,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
+import timber.log.Timber
+
 /**
  * The main activity of the application.
  */
@@ -54,6 +56,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        Timber.d("onCreate")
 
         splashScreen.setKeepOnScreenCondition {
             viewModel.shouldKeepSplashScreen
@@ -69,6 +72,7 @@ class MainActivity : ComponentActivity() {
                 }
                     .distinctUntilChanged()
                     .collectLatest { darkTheme ->
+                        Timber.d("Applying edge-to-edge (darkTheme=$darkTheme)")
                         enableEdgeToEdge(
                             statusBarStyle = SystemBarStyle.auto(
                                 Color.TRANSPARENT,

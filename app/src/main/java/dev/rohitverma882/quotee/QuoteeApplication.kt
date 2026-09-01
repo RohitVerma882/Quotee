@@ -36,5 +36,7 @@ class QuoteeApplication : Application() {
         if (applicationInfo.isDebuggable) {
             Timber.plant(Timber.DebugTree())
         }
+
+        Timber.d("Application created")
     }
 }

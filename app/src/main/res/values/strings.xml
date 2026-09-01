@@ -5,13 +5,12 @@
     <string name="quotes_title">Quotes</string>
 
     <string name="settings_title">Settings</string>
-    <string name="settings_appearance_heading">Appearance</string>
     <string name="settings_theme_title">Theme</string>
     <string name="settings_theme_system">System default</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>
-    <string name="settings_dynamic_colors_title">Dynamic colors</string>
-    <string name="settings_dynamic_colors_summary">Apply colors from your wallpaper to the app</string>
+    <string name="settings_dynamic_colors_title">Dynamic Colors</string>
+    <string name="settings_dynamic_colors_summary">Use colors from your wallpaper to personalize the app theme and create a consistent look across your device.</string>
 
     <string name="common_cancel">Cancel</string>
 </resources>

@@ -28,7 +28,6 @@ import dev.rohitverma882.quotee.domain.settings.repository.SettingsRepository
 
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -45,12 +44,11 @@ class SettingsViewModel @Inject constructor(
     /**
      * The UI state for the settings screen.
      */
-    val uiState: StateFlow<SettingsUiState> = repository.settings
-        .map { SettingsUiState.Success(it) }
+    val settings: StateFlow<AppSettings> = repository.settings
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = SettingsUiState.Loading
+            initialValue = AppSettings()
         )
 
     /**
@@ -72,18 +70,4 @@ class SettingsViewModel @Inject constructor(
     }
 }
 
-/**
- * UI state for the settings screen.
- */
-sealed interface SettingsUiState {
-    /**
-     * Loading state.
-     */
-    data object Loading : SettingsUiState
-
-    /**
-     * Success state with loaded settings.
-     */
-    data class Success(val settings: AppSettings) : SettingsUiState
-}
 

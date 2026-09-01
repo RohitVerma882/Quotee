@@ -31,6 +31,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 class AppNavigator(
     val backStack: NavBackStack<NavKey>
 ) {
+
     private fun goTo(key: NavKey) {
         if (backStack.lastOrNull() != key) {
             backStack.add(key)
