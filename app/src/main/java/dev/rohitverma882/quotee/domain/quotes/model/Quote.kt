@@ -17,17 +17,8 @@
 
 package dev.rohitverma882.quotee.domain.quotes.model
 
-/**
- * Domain model representing a quote.
- *
- * @property id The unique identifier of the quote.
- * @property content The text content of the quote.
- * @property author The author of the quote.
- */
 data class Quote(
     val id: Int,
     val content: String,
     val author: String
-) {
-    val displayContent get() = "“$content”"
-}
+)

@@ -21,18 +21,12 @@ import dev.rohitverma882.quotee.data.quotes.local.QuoteEntity
 import dev.rohitverma882.quotee.data.quotes.remote.QuoteDto
 import dev.rohitverma882.quotee.domain.quotes.model.Quote
 
-/**
- * Maps [QuoteDto] to [QuoteEntity].
- */
 fun QuoteDto.toEntity() = QuoteEntity(
     id = id,
     content = quote,
     author = author,
 )
 
-/**
- * Maps [QuoteEntity] to [Quote].
- */
 fun QuoteEntity.toDomain() = Quote(
     id = id,
     content = content,

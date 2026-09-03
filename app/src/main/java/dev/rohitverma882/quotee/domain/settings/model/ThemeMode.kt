@@ -24,31 +24,17 @@ import dev.rohitverma882.quotee.R
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * Represents the theme mode of the application.
- *
- * @property nameRes The string resource ID for the name of the theme mode.
- */
 @Serializable
 enum class ThemeMode(
     @param:StringRes
     val nameRes: Int
 ) {
-    /**
-     * Follow the system theme.
-     */
     @SerialName("system")
     SYSTEM(R.string.settings_theme_system),
 
-    /**
-     * Always use light theme.
-     */
     @SerialName("light")
     LIGHT(R.string.settings_theme_light),
 
-    /**
-     * Always use dark theme.
-     */
     @SerialName("dark")
     DARK(R.string.settings_theme_dark)
 }

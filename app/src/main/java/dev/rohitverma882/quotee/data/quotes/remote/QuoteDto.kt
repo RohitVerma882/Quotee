@@ -19,14 +19,6 @@ package dev.rohitverma882.quotee.data.quotes.remote
 
 import kotlinx.serialization.Serializable
 
-/**
- * Data transfer object for the quotes response.
- *
- * @property quotes The list of [QuoteDto].
- * @property total The total number of quotes available.
- * @property skip The number of quotes skipped.
- * @property limit The maximum number of quotes returned.
- */
 @Serializable
 data class QuotesResponseDto(
     val quotes: List<QuoteDto>,
@@ -35,13 +27,6 @@ data class QuotesResponseDto(
     val limit: Int,
 )
 
-/**
- * Data transfer object for a single quote.
- *
- * @property id The unique identifier of the quote.
- * @property quote The text content of the quote.
- * @property author The author of the quote.
- */
 @Serializable
 data class QuoteDto(
     val id: Int,

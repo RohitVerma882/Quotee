@@ -36,19 +36,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+import dev.rohitverma882.quotee.R
 import dev.rohitverma882.quotee.domain.quotes.model.Quote
 import dev.rohitverma882.quotee.presentation.theme.QuoteeTheme
 
-/**
- * A card component that displays a single quote.
- *
- * @param quote The [Quote] to display.
- * @param onCopy Callback when the copy button is clicked.
- */
 @Composable
 fun QuoteCard(
     modifier: Modifier = Modifier,
@@ -67,7 +63,7 @@ fun QuoteCard(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = quote.displayContent,
+                text = stringResource(R.string.quotes_card_content, quote.content),
                 style = MaterialTheme.typography.bodyLarge,
                 fontStyle = FontStyle.Italic,
                 lineHeight = MaterialTheme.typography.bodyLarge.lineHeight * 1.2f
@@ -79,7 +75,7 @@ fun QuoteCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "— ${quote.author}",
+                    text = stringResource(R.string.quotes_card_author, quote.author),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary
                 )

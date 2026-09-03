@@ -15,20 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.rohitverma882.quotee.common
+package dev.rohitverma882.quotee.common.qualifier
 
 import javax.inject.Qualifier
 
-/**
- * Qualifier for IO [kotlinx.coroutines.CoroutineDispatcher].
- */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class IoDispatcher
 
-/**
- * Qualifier for application-wide [kotlinx.coroutines.CoroutineScope].
- */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ApplicationScope

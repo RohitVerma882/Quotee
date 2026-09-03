@@ -22,20 +22,11 @@ import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * Sealed interface representing navigation keys in the application.
- */
 sealed interface AppNavKey : NavKey {
-    /**
-     * Key for the quotes screen.
-     */
     @Serializable
     @SerialName("quotes")
     data object Quotes : AppNavKey
 
-    /**
-     * Key for the settings screen.
-     */
     @Serializable
     @SerialName("settings")
     data object Settings : AppNavKey

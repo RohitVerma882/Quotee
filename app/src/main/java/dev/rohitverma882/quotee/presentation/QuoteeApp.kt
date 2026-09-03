@@ -26,13 +26,8 @@ import androidx.compose.ui.Modifier
 
 import dev.rohitverma882.quotee.presentation.navigation.AppNavDisplay
 
-/**
- * Top-level Composable for the Quotee application.
- */
 @Composable
-fun QuoteeApp(
-    modifier: Modifier = Modifier
-) {
+fun QuoteeApp(modifier: Modifier = Modifier) {
     Scaffold(
         modifier = modifier,
         contentWindowInsets = WindowInsets(0, 0, 0, 0)

@@ -20,12 +20,6 @@ package dev.rohitverma882.quotee.domain.settings.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * Domain model representing the application settings.
- *
- * @property themeMode The current theme mode of the application.
- * @property dynamicColor Whether dynamic color is enabled (Android 12+).
- */
 @Serializable
 data class AppSettings(
     @SerialName("theme_mode")

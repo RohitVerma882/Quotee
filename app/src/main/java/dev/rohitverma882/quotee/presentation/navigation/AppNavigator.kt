@@ -24,9 +24,6 @@ import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 
-/**
- * Navigator class to handle application navigation using Navigation 3.
- */
 @Stable
 class AppNavigator(
     val backStack: NavBackStack<NavKey>
@@ -38,26 +35,17 @@ class AppNavigator(
         }
     }
 
-    /**
-     * Navigates back.
-     */
     fun goBack() {
         if (backStack.size > 1) {
             backStack.removeLastOrNull()
         }
     }
 
-    /**
-     * Navigates to the settings screen.
-     */
     fun goToSettings() {
         goTo(AppNavKey.Settings)
     }
 }
 
-/**
- * Creates and remembers an [AppNavigator].
- */
 @Composable
 fun rememberAppNavigator(
     backStack: NavBackStack<NavKey> = rememberNavBackStack(AppNavKey.Quotes)

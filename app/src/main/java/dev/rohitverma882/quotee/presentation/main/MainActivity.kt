@@ -46,9 +46,6 @@ import kotlinx.coroutines.launch
 
 import timber.log.Timber
 
-/**
- * The main activity of the application.
- */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()

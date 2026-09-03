@@ -29,24 +29,15 @@ import dev.rohitverma882.quotee.domain.settings.repository.SettingsRepository
 
 import javax.inject.Singleton
 
-/**
- * Module for binding repository implementations to their interfaces.
- */
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
-    /**
-     * Binds [SettingsRepositoryImpl] to [SettingsRepository].
-     */
     @Binds
     @Singleton
     abstract fun bindSettingsRepository(
         impl: SettingsRepositoryImpl
     ): SettingsRepository
 
-    /**
-     * Binds [QuotesRepositoryImpl] to [QuotesRepository].
-     */
     @Binds
     @Singleton
     abstract fun bindQuotesRepository(

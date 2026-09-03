@@ -20,17 +20,7 @@ package dev.rohitverma882.quotee.data.quotes.remote
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-/**
- * Retrofit API interface for accessing quotes.
- */
 interface QuotesApi {
-    /**
-     * Fetches a list of quotes from the API.
-     *
-     * @param limit The maximum number of quotes to return.
-     * @param skip The number of quotes to skip.
-     * @return A [QuotesResponseDto] containing the list of quotes.
-     */
     @GET("quotes")
     suspend fun getQuotes(
         @Query("limit") limit: Int,
@@ -38,9 +28,6 @@ interface QuotesApi {
     ): QuotesResponseDto
 
     companion object {
-        /**
-         * The base URL for the quotes API.
-         */
         const val BASE_URL = "https://dummyjson.com/"
     }
 }

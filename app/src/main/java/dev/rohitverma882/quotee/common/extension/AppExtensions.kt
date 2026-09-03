@@ -19,8 +19,5 @@ package dev.rohitverma882.quotee.common.extension
 
 import android.content.pm.ApplicationInfo
 
-/**
- * Returns true if the application is debuggable.
- */
 val ApplicationInfo.isDebuggable
     get() = (flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0

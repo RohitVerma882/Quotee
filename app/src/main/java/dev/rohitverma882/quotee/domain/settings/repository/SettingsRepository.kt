@@ -22,26 +22,10 @@ import dev.rohitverma882.quotee.domain.settings.model.ThemeMode
 
 import kotlinx.coroutines.flow.Flow
 
-/**
- * Repository for managing application settings.
- */
 interface SettingsRepository {
-    /**
-     * A [Flow] of the current [AppSettings].
-     */
     val settings: Flow<AppSettings>
 
-    /**
-     * Sets the theme mode of the application.
-     *
-     * @param mode The new [ThemeMode].
-     */
     suspend fun setThemeMode(mode: ThemeMode)
 
-    /**
-     * Sets whether dynamic color is enabled.
-     *
-     * @param enabled True to enable dynamic color, false otherwise.
-     */
     suspend fun setDynamicColor(enabled: Boolean)
 }

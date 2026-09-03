@@ -31,17 +31,11 @@ import kotlinx.coroutines.flow.Flow
 
 import javax.inject.Inject
 
-/**
- * ViewModel for [QuotesScreen].
- */
 @HiltViewModel
 class QuotesViewModel @Inject constructor(
     repository: QuotesRepository
 ) : ViewModel() {
 
-    /**
-     * A [Flow] of paginated [Quote]s.
-     */
     val quotes: Flow<PagingData<Quote>> = repository.getQuotes()
         .cachedIn(viewModelScope)
 }

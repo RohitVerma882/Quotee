@@ -20,9 +20,6 @@ package dev.rohitverma882.quotee.data.quotes.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
-/**
- * Room database for the application.
- */
 @Database(
     entities = [
         QuoteEntity::class,
@@ -32,13 +29,7 @@ import androidx.room.RoomDatabase
     exportSchema = true,
 )
 abstract class QuotesDatabase : RoomDatabase() {
-    /**
-     * Returns the [QuoteDao].
-     */
     abstract fun quoteDao(): QuoteDao
 
-    /**
-     * Returns the [QuoteRemoteKeysDao].
-     */
     abstract fun quoteRemoteKeysDao(): QuoteRemoteKeysDao
 }

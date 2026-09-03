@@ -23,12 +23,6 @@ import dev.rohitverma882.quotee.domain.quotes.model.Quote
 
 import kotlinx.coroutines.flow.Flow
 
-/**
- * Repository for accessing quotes.
- */
 interface QuotesRepository {
-    /**
-     * Returns a [Flow] of paginated quotes.
-     */
     fun getQuotes(): Flow<PagingData<Quote>>
 }

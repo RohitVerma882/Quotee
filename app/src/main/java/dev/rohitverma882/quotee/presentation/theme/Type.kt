@@ -61,9 +61,6 @@ private val GoogleSansFontFamily = FontFamily(
 
 private val baseline = Typography()
 
-/**
- * The typography for the Quotee application.
- */
 internal val QuoteeTypography = Typography(
     displayLarge = baseline.displayLarge.copy(
         fontFamily = GoogleSansFontFamily

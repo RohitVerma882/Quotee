@@ -20,9 +20,12 @@ package dev.rohitverma882.quotee.presentation.settings
 import android.os.Build
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -54,7 +57,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -65,9 +67,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.rohitverma882.quotee.R
 import dev.rohitverma882.quotee.domain.settings.model.ThemeMode
 
-/**
- * Screen that displays the application settings.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -81,14 +80,19 @@ fun SettingsScreen(
     var showThemeDialog by remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
                 scrollBehavior = scrollBehavior,
                 title = { Text(stringResource(R.string.settings_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                            contentDescription = null
+                        )
                     }
                 }
             )
@@ -97,23 +101,19 @@ fun SettingsScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(innerPadding),
+            contentPadding = PaddingValues(16.dp)
         ) {
             item {
-                PreferenceItem(
-                    title = stringResource(R.string.settings_theme_title),
-                    summary = stringResource(settings.themeMode.nameRes),
-                    icon = Icons.Outlined.LightMode,
+                ThemeSettingItem(
+                    theme = settings.themeMode,
                     onClick = { showThemeDialog = true }
                 )
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 item {
-                    SwitchPreferenceItem(
-                        title = stringResource(R.string.settings_dynamic_colors_title),
-                        summary = stringResource(R.string.settings_dynamic_colors_summary),
-                        icon = Icons.Outlined.ColorLens,
+                    DynamicColorSettingItem(
                         checked = settings.dynamicColor,
                         onCheckedChange = viewModel::setDynamicColor
                     )
@@ -124,101 +124,99 @@ fun SettingsScreen(
 
     if (showThemeDialog) {
         SelectThemeDialog(
+            onDismiss = { showThemeDialog = false },
             currentTheme = settings.themeMode,
             onThemeSelected = {
                 viewModel.setThemeMode(it)
                 showThemeDialog = false
-            },
-            onDismiss = { showThemeDialog = false }
+            }
         )
     }
 }
 
-/**
- * A standard menu item for settings and other lists.
- */
 @Composable
-fun PreferenceItem(
-    title: String,
-    icon: ImageVector,
-    onClick: () -> Unit,
+private fun ThemeSettingItem(
     modifier: Modifier = Modifier,
-    summary: String? = null
+    theme: ThemeMode,
+    onClick: () -> Unit
 ) {
     ListItem(
         modifier = modifier
             .height(IntrinsicSize.Min)
             .clickable(onClick = onClick),
-        headlineContent = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyLarge
-            )
-        },
-        supportingContent = summary?.let {
-            {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        },
         leadingContent = {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
-            )
-        }
-    )
-}
-
-/**
- * A settings item with a toggle switch.
- */
-@Composable
-fun SwitchPreferenceItem(
-    title: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-    summary: String? = null,
-    icon: ImageVector? = null
-) {
-    ListItem(
-        modifier = modifier
-            .height(IntrinsicSize.Min)
-            .clickable { onCheckedChange(!checked) },
-        headlineContent = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyLarge
-            )
-        },
-        supportingContent = summary?.let {
-            {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        },
-        leadingContent = icon?.let {
-            {
+            Box(
+                modifier = Modifier.fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
                 Icon(
-                    imageVector = it,
+                    imageVector = Icons.Outlined.LightMode,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
         },
-        trailingContent = {
-            Switch(
-                checked = checked,
-                onCheckedChange = onCheckedChange
+        headlineContent = {
+            Text(
+                text = stringResource(R.string.settings_theme_title),
+                style = MaterialTheme.typography.bodyLarge
             )
+        },
+        supportingContent = {
+            Text(
+                text = stringResource(theme.nameRes),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    )
+}
+
+@Composable
+private fun DynamicColorSettingItem(
+    modifier: Modifier = Modifier,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    ListItem(
+        modifier = modifier
+            .height(IntrinsicSize.Min)
+            .clickable { onCheckedChange(!checked) },
+        leadingContent = {
+            Box(
+                modifier = Modifier.fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.ColorLens,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        },
+        headlineContent = {
+            Text(
+                text = stringResource(R.string.settings_dynamic_colors_title),
+                style = MaterialTheme.typography.bodyLarge
+            )
+        },
+        supportingContent = {
+            Text(
+                text = stringResource(R.string.settings_dynamic_colors_summary),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        },
+        trailingContent = {
+            Box(
+                modifier = Modifier.fillMaxHeight(),
+                contentAlignment = Alignment.Center
+            ) {
+                Switch(
+                    checked = checked,
+                    onCheckedChange = onCheckedChange
+                )
+            }
         }
     )
 }
@@ -226,9 +224,9 @@ fun SwitchPreferenceItem(
 @Composable
 private fun SelectThemeDialog(
     modifier: Modifier = Modifier,
+    onDismiss: () -> Unit,
     currentTheme: ThemeMode,
-    onThemeSelected: (ThemeMode) -> Unit,
-    onDismiss: () -> Unit
+    onThemeSelected: (ThemeMode) -> Unit
 ) {
     AlertDialog(
         modifier = modifier,
@@ -253,10 +251,11 @@ private fun SelectThemeDialog(
                             selected = (theme == currentTheme),
                             onClick = null
                         )
+
                         Text(
+                            modifier = Modifier.padding(start = 16.dp),
                             text = stringResource(theme.nameRes),
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(start = 16.dp)
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     }
                 }

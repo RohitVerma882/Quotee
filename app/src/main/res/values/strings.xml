@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Quotee</string>
+    <string name="app_name">Quotee</string>
 
     <string name="quotes_title">Quotes</string>
+    <string name="quotes_load_failed_message">Unable to load quotes</string>
+    <string name="quotes_content_copy_message">Quote copied to clipboard</string>
+    <string name="quotes_card_content">“%s”</string>
+    <string name="quotes_card_author">— %s</string>
 
     <string name="settings_title">Settings</string>
     <string name="settings_theme_title">Theme</string>
@@ -13,4 +17,5 @@
     <string name="settings_dynamic_colors_summary">Use colors from your wallpaper to personalize the app theme and create a consistent look across your device.</string>
 
     <string name="common_cancel">Cancel</string>
+    <string name="common_retry">Retry</string>
 </resources>

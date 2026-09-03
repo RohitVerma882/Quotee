@@ -20,13 +20,6 @@ package dev.rohitverma882.quotee.data.quotes.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-/**
- * Room entity representing remote keys for pagination.
- *
- * @property quoteId The unique identifier of the quote.
- * @property prevKey The previous page key.
- * @property nextKey The next page key.
- */
 @Entity(tableName = "quote_remote_keys")
 data class QuoteRemoteKeysEntity(
     @PrimaryKey

@@ -27,29 +27,17 @@ import kotlinx.coroutines.flow.Flow
 
 import javax.inject.Inject
 
-/**
- * Implementation of [SettingsRepository] using DataStore.
- */
 class SettingsRepositoryImpl @Inject constructor(
-    private val dataStore: DataStore<AppSettings>
+    private val dataStore: DataStore<AppSettings>,
 ) : SettingsRepository {
-    /**
-     * A [Flow] of the current [AppSettings].
-     */
     override val settings: Flow<AppSettings> = dataStore.data
 
-    /**
-     * Sets the theme mode of the application.
-     */
     override suspend fun setThemeMode(mode: ThemeMode) {
         dataStore.updateData { currentSettings ->
             currentSettings.copy(themeMode = mode)
         }
     }
 
-    /**
-     * Sets whether dynamic color is enabled.
-     */
     override suspend fun setDynamicColor(enabled: Boolean) {
         dataStore.updateData { currentSettings ->
             currentSettings.copy(dynamicColor = enabled)

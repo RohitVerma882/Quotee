@@ -33,17 +33,11 @@ import kotlinx.coroutines.launch
 
 import javax.inject.Inject
 
-/**
- * ViewModel for [SettingsScreen].
- */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val repository: SettingsRepository
 ) : ViewModel() {
 
-    /**
-     * The UI state for the settings screen.
-     */
     val settings: StateFlow<AppSettings> = repository.settings
         .stateIn(
             scope = viewModelScope,
@@ -51,18 +45,12 @@ class SettingsViewModel @Inject constructor(
             initialValue = AppSettings()
         )
 
-    /**
-     * Sets the theme mode.
-     */
     fun setThemeMode(mode: ThemeMode) {
         viewModelScope.launch {
             repository.setThemeMode(mode)
         }
     }
 
-    /**
-     * Sets whether dynamic color is enabled.
-     */
     fun setDynamicColor(enabled: Boolean) {
         viewModelScope.launch {
             repository.setDynamicColor(enabled)

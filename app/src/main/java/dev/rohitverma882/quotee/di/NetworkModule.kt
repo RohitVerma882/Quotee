@@ -39,15 +39,9 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 import javax.inject.Singleton
 
-/**
- * Module for providing network-related dependencies.
- */
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-    /**
-     * Provides the [HttpLoggingInterceptor] instance.
-     */
     @Provides
     @Singleton
     fun provideLoggingInterceptor(
@@ -60,9 +54,6 @@ object NetworkModule {
         }
     }
 
-    /**
-     * Provides the [OkHttpClient] instance.
-     */
     @Provides
     @Singleton
     fun provideOkHttpClient(
@@ -71,9 +62,6 @@ object NetworkModule {
         .addInterceptor(loggingInterceptor)
         .build()
 
-    /**
-     * Provides the [Retrofit] instance for quotes API.
-     */
     @Provides
     @Singleton
     fun provideQuotesRetrofit(
@@ -86,9 +74,6 @@ object NetworkModule {
             json.asConverterFactory("application/json".toMediaType())
         ).build()
 
-    /**
-     * Provides the [QuotesApi] instance.
-     */
     @Provides
     @Singleton
     fun provideQuotesApi(retrofit: Retrofit): QuotesApi {

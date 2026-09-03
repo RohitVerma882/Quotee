@@ -33,17 +33,11 @@ import kotlinx.coroutines.flow.stateIn
 
 import javax.inject.Inject
 
-/**
- * ViewModel for [MainActivity].
- */
 @HiltViewModel
 class MainViewModel @Inject constructor(
     repository: SettingsRepository
 ) : ViewModel() {
 
-    /**
-     * The UI state for the main screen.
-     */
     val uiState: StateFlow<MainUiState> = repository.settings
         .map(MainUiState::Success)
         .stateIn(
@@ -52,41 +46,21 @@ class MainViewModel @Inject constructor(
             initialValue = MainUiState.Loading
         )
 
-    /**
-     * Whether the splash screen should remain visible.
-     */
     val shouldKeepSplashScreen: Boolean
         get() = uiState.value is MainUiState.Loading
 }
 
-/**
- * UI state for the main activity.
- */
 sealed interface MainUiState {
-    /**
-     * Whether dynamic color is enabled.
-     */
     val dynamicColor: Boolean
 
-    /**
-     * Returns true if dark theme should be used.
-     *
-     * @param isSystemDark Whether the system is in dark theme.
-     */
     fun shouldDarkTheme(isSystemDark: Boolean): Boolean
 
-    /**
-     * Initial loading state.
-     */
     data object Loading : MainUiState {
         override val dynamicColor = true
 
         override fun shouldDarkTheme(isSystemDark: Boolean) = isSystemDark
     }
 
-    /**
-     * Success state with loaded settings.
-     */
     data class Success(val settings: AppSettings) : MainUiState {
         override val dynamicColor = settings.dynamicColor
 

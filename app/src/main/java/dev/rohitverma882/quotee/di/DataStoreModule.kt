@@ -27,26 +27,16 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 
-import dev.rohitverma882.quotee.common.ApplicationScope
+import dev.rohitverma882.quotee.common.qualifier.ApplicationScope
 import dev.rohitverma882.quotee.data.settings.SettingsSerializer
 
 import kotlinx.coroutines.CoroutineScope
 
 import javax.inject.Singleton
 
-/**
- * Dagger module for providing DataStore related dependencies.
- */
 @Module
 @InstallIn(SingletonComponent::class)
 object DataStoreModule {
-    /**
-     * Provides the settings DataStore.
-     *
-     * @param context The application context.
-     * @param scope The application-level coroutine scope.
-     * @param serializer The serializer for settings data.
-     */
     @Provides
     @Singleton
     fun provideSettingsDataStore(

@@ -22,14 +22,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
-/**
- * Data Access Object for quote remote keys.
- */
 @Dao
 interface QuoteRemoteKeysDao {
-    /**
-     * Returns the remote keys for the given quote ID.
-     */
     @Query(
         """
         SELECT *
@@ -39,15 +33,9 @@ interface QuoteRemoteKeysDao {
     )
     suspend fun getById(quoteId: Int): QuoteRemoteKeysEntity?
 
-    /**
-     * Inserts a list of remote keys into the database.
-     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(keys: List<QuoteRemoteKeysEntity>)
 
-    /**
-     * Clears all remote keys from the database.
-     */
     @Query("DELETE FROM quote_remote_keys")
     suspend fun clear()
 }

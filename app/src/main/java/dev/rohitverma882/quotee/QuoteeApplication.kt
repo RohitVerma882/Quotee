@@ -25,9 +25,6 @@ import dev.rohitverma882.quotee.common.extension.isDebuggable
 
 import timber.log.Timber
 
-/**
- * The application class for Quotee, initialized with Hilt.
- */
 @HiltAndroidApp
 class QuoteeApplication : Application() {
     override fun onCreate() {

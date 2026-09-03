@@ -23,20 +23,13 @@ import androidx.activity.ComponentActivity
 import androidx.core.util.Consumer
 
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
 
-/**
- * Returns true if the system is currently in dark theme.
- */
 val Configuration.isSystemInDarkTheme
     get() = (uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
-/**
- * Returns a [Flow] that emits true if the system is in dark theme, and updates when the configuration changes.
- */
 fun ComponentActivity.isSystemInDarkTheme2() = callbackFlow {
     val listener = Consumer<Configuration> { newConfig ->
         trySend(newConfig.isSystemInDarkTheme)

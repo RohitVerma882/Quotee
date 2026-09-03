@@ -20,13 +20,6 @@ package dev.rohitverma882.quotee.data.quotes.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-/**
- * Room entity representing a quote in the database.
- *
- * @property id The unique identifier of the quote.
- * @property content The text content of the quote.
- * @property author The author of the quote.
- */
 @Entity(tableName = "quotes")
 data class QuoteEntity(
     @PrimaryKey

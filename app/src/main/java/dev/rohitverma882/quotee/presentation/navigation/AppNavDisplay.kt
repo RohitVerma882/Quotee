@@ -17,6 +17,7 @@
 
 package dev.rohitverma882.quotee.presentation.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -27,16 +28,13 @@ import androidx.navigation3.ui.NavDisplay
 import dev.rohitverma882.quotee.presentation.quotes.QuotesScreen
 import dev.rohitverma882.quotee.presentation.settings.SettingsScreen
 
-/**
- * Main navigation display for the application.
- */
 @Composable
 fun AppNavDisplay(
     modifier: Modifier = Modifier,
     navigator: AppNavigator = rememberAppNavigator()
 ) {
     NavDisplay(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         backStack = navigator.backStack,
         onBack = navigator::goBack,
         entryDecorators = listOf(

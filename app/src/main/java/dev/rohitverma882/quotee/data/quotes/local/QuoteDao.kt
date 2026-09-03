@@ -23,34 +23,17 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
-/**
- * Data Access Object for quotes.
- */
 @Dao
 interface QuoteDao {
-    /**
-     * Returns a [PagingSource] for paginated quotes from the database.
-     */
     @Query("SELECT * FROM quotes ORDER BY id ASC")
     fun pagingSource(): PagingSource<Int, QuoteEntity>
 
-    /**
-     * Inserts a list of quotes into the database.
-     *
-     * @param quotes The list of [QuoteEntity] to insert.
-     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(quotes: List<QuoteEntity>)
 
-    /**
-     * Clears all quotes from the database.
-     */
     @Query("DELETE FROM quotes")
     suspend fun clear()
 
-    /**
-     * Returns the total number of quotes in the database.
-     */
     @Query("SELECT COUNT(*) FROM quotes")
     suspend fun count(): Int
 }

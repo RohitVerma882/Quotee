@@ -33,15 +33,12 @@ import dev.rohitverma882.quotee.data.quotes.remote.QuotesApi
 
 import javax.inject.Inject
 
-/**
- * Remote mediator for paginating quotes from the network to the local database.
- */
 @OptIn(ExperimentalPagingApi::class)
 class QuotesRemoteMediator @Inject constructor(
     private val api: QuotesApi,
     private val database: QuotesDatabase,
     private val dao: QuoteDao,
-    private val remoteKeysDao: QuoteRemoteKeysDao
+    private val remoteKeysDao: QuoteRemoteKeysDao,
 ) : RemoteMediator<Int, QuoteEntity>() {
 
     override suspend fun initialize(): InitializeAction {
@@ -59,15 +56,15 @@ class QuotesRemoteMediator @Inject constructor(
         val page = when (loadType) {
             LoadType.REFRESH -> 1
             LoadType.PREPEND -> {
-                val keys = getRemoteKeyForFirstItem(state)
-                keys?.prevKey
-                    ?: return MediatorResult.Success(endOfPaginationReached = keys != null)
+                val key = getRemoteKeyForFirstItem(state)
+                key?.prevKey
+                    ?: return MediatorResult.Success(endOfPaginationReached = key != null)
             }
 
             LoadType.APPEND -> {
-                val keys = getRemoteKeyForLastItem(state)
-                keys?.nextKey
-                    ?: return MediatorResult.Success(endOfPaginationReached = keys != null)
+                val key = getRemoteKeyForLastItem(state)
+                key?.nextKey
+                    ?: return MediatorResult.Success(endOfPaginationReached = key != null)
             }
         }
 

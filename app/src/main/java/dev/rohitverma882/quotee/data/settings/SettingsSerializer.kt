@@ -31,22 +31,13 @@ import java.io.OutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
-/**
- * Serializer for [AppSettings] to be used with DataStore.
- */
 @Suppress("BlockingMethodInNonBlockingContext")
 @Singleton
 class SettingsSerializer @Inject constructor(
-    private val json: Json
+    private val json: Json,
 ) : Serializer<AppSettings> {
-    /**
-     * The default [AppSettings] value.
-     */
     override val defaultValue = AppSettings()
 
-    /**
-     * Reads [AppSettings] from the [InputStream].
-     */
     override suspend fun readFrom(input: InputStream): AppSettings {
         return try {
             json.decodeFromString(
@@ -58,9 +49,6 @@ class SettingsSerializer @Inject constructor(
         }
     }
 
-    /**
-     * Writes [AppSettings] to the [OutputStream].
-     */
     override suspend fun writeTo(t: AppSettings, output: OutputStream) {
         output.write(
             json.encodeToString(

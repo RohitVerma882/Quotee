@@ -26,15 +26,9 @@ import kotlinx.serialization.json.Json
 
 import javax.inject.Singleton
 
-/**
- * Main application module for providing global dependencies.
- */
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    /**
-     * Provides a [Json] instance with custom configuration.
-     */
     @Provides
     @Singleton
     fun provideJson() = Json {

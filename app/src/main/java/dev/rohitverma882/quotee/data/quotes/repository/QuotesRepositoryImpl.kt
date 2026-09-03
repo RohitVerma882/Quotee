@@ -34,18 +34,12 @@ import kotlinx.coroutines.flow.map
 
 import javax.inject.Inject
 
-/**
- * Implementation of [QuotesRepository] using Paging 3.
- */
 @OptIn(ExperimentalPagingApi::class)
 class QuotesRepositoryImpl @Inject constructor(
     private val dao: QuoteDao,
-    private val remoteMediator: QuotesRemoteMediator
+    private val remoteMediator: QuotesRemoteMediator,
 ) : QuotesRepository {
 
-    /**
-     * Returns a [Flow] of paginated [Quote]s.
-     */
     override fun getQuotes(): Flow<PagingData<Quote>> {
         return Pager(
             config = PagingConfig(
@@ -54,9 +48,7 @@ class QuotesRepositoryImpl @Inject constructor(
                 enablePlaceholders = false,
             ),
             remoteMediator = remoteMediator,
-            pagingSourceFactory = {
-                dao.pagingSource()
-            }
+            pagingSourceFactory = { dao.pagingSource() }
         )
             .flow.map { pagingData ->
                 pagingData.map { entity ->

@@ -27,21 +27,13 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 
-import dev.rohitverma882.quotee.data.quotes.local.QuoteDao
-import dev.rohitverma882.quotee.data.quotes.local.QuoteRemoteKeysDao
 import dev.rohitverma882.quotee.data.quotes.local.QuotesDatabase
 
 import javax.inject.Singleton
 
-/**
- * Module for providing database-related dependencies.
- */
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-    /**
-     * Provides the [QuotesDatabase] instance.
-     */
     @Provides
     @Singleton
     fun provideQuotesDatabase(
@@ -52,17 +44,11 @@ object DatabaseModule {
         name = "quotes.db",
     ).build()
 
-    /**
-     * Provides the [QuoteDao] instance.
-     */
     @Provides
     fun provideQuotesDao(
         database: QuotesDatabase
     ) = database.quoteDao()
 
-    /**
-     * Provides the [QuoteRemoteKeysDao] instance.
-     */
     @Provides
     fun provideQuoteRemoteKeysDao(
         database: QuotesDatabase
