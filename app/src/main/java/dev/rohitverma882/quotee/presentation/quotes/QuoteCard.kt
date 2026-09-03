@@ -63,7 +63,7 @@ fun QuoteCard(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
-                text = stringResource(R.string.quotes_card_content, quote.content),
+                text = stringResource(R.string.quotes_content_body, quote.content),
                 style = MaterialTheme.typography.bodyLarge,
                 fontStyle = FontStyle.Italic,
                 lineHeight = MaterialTheme.typography.bodyLarge.lineHeight * 1.2f
@@ -75,7 +75,7 @@ fun QuoteCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = stringResource(R.string.quotes_card_author, quote.author),
+                    text = stringResource(R.string.quotes_author_label, quote.author),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary
                 )

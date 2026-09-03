@@ -102,7 +102,7 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            contentPadding = PaddingValues(16.dp)
+            contentPadding = PaddingValues(top = 8.dp, bottom = 8.dp)
         ) {
             item {
                 ThemeSettingItem(

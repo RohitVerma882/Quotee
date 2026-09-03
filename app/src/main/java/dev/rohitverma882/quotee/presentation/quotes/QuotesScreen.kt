@@ -116,7 +116,7 @@ fun QuotesScreen(
                 ) { index ->
                     quotes[index]?.let { quote ->
                         val clipboard = LocalClipboard.current
-                        val copyMessage = stringResource(R.string.quotes_content_copy_message)
+                        val message = stringResource(R.string.quotes_copy_success_message)
 
                         QuoteCard(
                             quote = quote,
@@ -125,7 +125,7 @@ fun QuotesScreen(
                                     val clipData = ClipData.newPlainText("Quote", quote.content)
                                     clipboard.setClipEntry(ClipEntry(clipData))
                                     snackbarHostState.currentSnackbarData?.dismiss()
-                                    snackbarHostState.showSnackbar(copyMessage)
+                                    snackbarHostState.showSnackbar(message)
                                 }
                             }
                         )
