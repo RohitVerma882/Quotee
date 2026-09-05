@@ -136,7 +136,9 @@ fun QuotesScreen(
                 if (quotes.loadState.append is LoadState.Loading) {
                     item {
                         Box(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator()
