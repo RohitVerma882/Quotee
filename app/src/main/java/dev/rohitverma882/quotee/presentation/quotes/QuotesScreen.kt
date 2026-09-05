@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
@@ -72,19 +73,22 @@ fun QuotesScreen(
 ) {
     val quotes = viewModel.quotes.collectAsLazyPagingItems()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
     LaunchedEffect(quotes.itemCount) {
-        if (quotes.itemCount > 0 && listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0) {
+        if (quotes.itemCount > 0
+            && listState.firstVisibleItemIndex == 0
+            && listState.firstVisibleItemScrollOffset == 0
+        ) {
             listState.scrollToItem(0)
         }
     }
 
     Scaffold(
         modifier = modifier
-            .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
@@ -99,16 +103,12 @@ fun QuotesScreen(
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
+        Box(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                state = listState,
-                contentPadding = PaddingValues(16.dp),
+                contentPadding = innerPadding.plus(PaddingValues(16.dp)),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
+                state = listState
             ) {
                 items(
                     count = quotes.itemCount,
@@ -121,8 +121,9 @@ fun QuotesScreen(
                         QuoteCard(
                             quote = quote,
                             onCopy = {
+                                val clipData = ClipData.newPlainText("Quote", quote.content)
+
                                 scope.launch {
-                                    val clipData = ClipData.newPlainText("Quote", quote.content)
                                     clipboard.setClipEntry(ClipEntry(clipData))
                                     snackbarHostState.currentSnackbarData?.dismiss()
                                     snackbarHostState.showSnackbar(message)
@@ -135,10 +136,8 @@ fun QuotesScreen(
                 if (quotes.loadState.append is LoadState.Loading) {
                     item {
                         Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
                         ) {
                             CircularProgressIndicator()
                         }
@@ -167,7 +166,7 @@ fun QuotesScreen(
                 Column(
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .padding(24.dp),
+                        .padding(innerPadding.plus(PaddingValues(24.dp))),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                 ) {

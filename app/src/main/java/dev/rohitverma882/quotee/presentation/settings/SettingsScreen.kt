@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -81,7 +82,6 @@ fun SettingsScreen(
 
     Scaffold(
         modifier = modifier
-            .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
@@ -99,10 +99,9 @@ fun SettingsScreen(
         }
     ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            contentPadding = PaddingValues(top = 8.dp, bottom = 8.dp)
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = innerPadding
+                .plus(PaddingValues(top = 8.dp, bottom = 8.dp))
         ) {
             item {
                 ThemeSettingItem(
