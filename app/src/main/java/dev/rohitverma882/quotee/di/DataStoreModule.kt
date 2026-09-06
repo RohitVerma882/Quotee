@@ -28,8 +28,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 
 import dev.rohitverma882.quotee.common.qualifier.ApplicationScope
+import dev.rohitverma882.quotee.common.qualifier.IoDispatcher
 import dev.rohitverma882.quotee.data.settings.SettingsSerializer
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 
 import javax.inject.Singleton
@@ -42,10 +44,11 @@ object DataStoreModule {
     fun provideSettingsDataStore(
         @ApplicationContext context: Context,
         @ApplicationScope scope: CoroutineScope,
+        @IoDispatcher dispatcher: CoroutineDispatcher,
         serializer: SettingsSerializer
     ) = DataStoreFactory.createInDeviceProtectedStorage(
         context = context,
-        scope = scope,
+        scope = CoroutineScope(dispatcher + scope.coroutineContext),
         serializer = serializer,
         fileName = "settings.json"
     )
